@@ -1,4 +1,4 @@
 kafka-avro
 ==========
 
-kafka test code with avro.
+kafka-python test code with avro.
