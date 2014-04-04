@@ -18,16 +18,14 @@ def kafkahighlevelproducer(kafka_conn, schema, bytes):
     datum_writer = avro.io.DatumWriter(schema)
 
     producer = SimpleProducer(kafka_conn)
-    for topic in ("DummyLog", "DUMMY_LOG", "DummyLog2","DUMMY_LOG2"):
+    for topic in ["DUMMY_LOG"]:
         writer.truncate(0)
         datum_writer.write({"id": 100L, "logTime": 20140401L, "muchoStuff": {"test": "test1value"}}, encoder)
         bytes = writer.getvalue()
-        print "m1 bytes len:%d" % (len(bytes))
         producer.send_messages(topic, bytes)
         writer.truncate(0)
         datum_writer.write({"id": 101L, "logTime": 20140402L, "muchoStuff": {"test": "test2value"}}, encoder)
         bytes = writer.getvalue()
-        print "m2 bytes len:%d" % (len(bytes))
         producer.send_messages(topic, bytes)
 
     writer.close()
@@ -36,7 +34,7 @@ def kafkahighlevelproducer(kafka_conn, schema, bytes):
 
 def kafkahighlevelconsumer(kafka_conn, schema):
     print "SimpleConsumer start."
-    for topic in ("DummyLog", "DUMMY_LOG", "DummyLog2","DUMMY_LOG2"):
+    for topic in ["DUMMY_LOG"]:
         print "topic=%s\n" % (topic)
         consumer = SimpleConsumer(kafka, "my-group" + topic, topic, auto_commit=False)
         # TODO: how to escape this loop? 
@@ -47,7 +45,6 @@ def kafkahighlevelconsumer(kafka_conn, schema):
             decoder = avro.io.BinaryDecoder(reader)
             datum_reader = avro.io.DatumReader(schema)
             
-            # TODO: How to iterate?
             ret = datum_reader.read(decoder)
             print ret["id"]
             print ret["logTime"]
@@ -76,8 +73,8 @@ if __name__ == '__main__':
     # Kafka Common
     kafka = KafkaClient("kafka-01:9092")
 
-    #kafkahighlevelproducer(kafka, schema, bytes)
-    kafkahighlevelconsumer(kafka, schema)
+    kafkahighlevelproducer(kafka, schema, bytes)
+    #kafkahighlevelconsumer(kafka, schema)
     
 
 # vim: set nu expandtab tabstop=4 ft=python:
