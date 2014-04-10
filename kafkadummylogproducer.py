@@ -15,6 +15,8 @@ def kafkahighlevelproducer(kafka_conn, schema, bytes):
 
     writer =  cStringIO.StringIO()
     encoder = avro.io.BinaryEncoder(writer)
+    #JSONEncoder is not implemented ..
+    #encoder = avro.io.JSONEncoder(writer)
     datum_writer = avro.io.DatumWriter(schema)
 
     producer = SimpleProducer(kafka_conn)
@@ -54,10 +56,6 @@ def kafkahighlevelconsumer(kafka_conn, schema):
             reader.close()
 
     print "SimpleConsumer done."
-
-###########################################
-## kafka Low level API
-###########################################
 
 def kafkalowleveltest(kafka, bytes):
     """
